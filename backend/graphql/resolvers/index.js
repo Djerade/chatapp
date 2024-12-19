@@ -23,6 +23,7 @@ export const resolvers = {
   Subscription: {
     messageSent: {
       subscribe: () => {
+      
         pubsub.asyncIterator(['MESSAGE_SENT']);
       },
     },
