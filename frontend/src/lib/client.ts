@@ -1,12 +1,33 @@
-// 'use client';
-// import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-// import { registerApolloClient } from "@apollo/experimental-nextjs-app-support";
+'use client';
+import { ApolloLink, HttpLink } from '@apollo/client';
+import * as dotenv from 'dotenv';
+import {
+  NextSSRInMemoryCache,
+  NextSSRApolloClient,
+  SSRMultipartLink
+} from '@apollo/experimental-nextjs-app-support/ssr';
 
-// export const { getClient } = registerApolloClient(() => {
-//   return new ApolloClient({
-//     cache: new InMemoryCache(),
-//     link: new HttpLink({
-//       uri: "put your api endpoint here",
-//     }),
-//   });
-// });
+dotenv.config();
+
+function client() {
+  const httpLink = new HttpLink({
+    uri: process.env.URL || 'http://localhost:5000/graphql',
+    fetchOptions: { cache: 'no-store' }
+  });
+
+  return new NextSSRApolloClient({
+    cache: new NextSSRInMemoryCache(),
+    link:
+      typeof window === 'undefined'
+        ? ApolloLink.from([
+            new SSRMultipartLink({
+              stripDefer: true
+            }),
+            httpLink
+          ])
+        : httpLink,
+    ssrMode: true
+  });
+}
+
+export default client;

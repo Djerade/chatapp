@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -20,10 +20,6 @@ export const metadata: Metadata = {
 };
 
 
-const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
-  cache: new InMemoryCache(),
-});
 
 
 
@@ -34,10 +30,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ApolloProvider client={client}>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>    
+      
          {children}
-        </ApolloProvider>,
+    
       </body>
     </html>
   );
